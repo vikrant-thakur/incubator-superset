@@ -39,4 +39,6 @@ thrift-sasl==0.3.0
 unicodecsv==0.14.1
 unidecode==1.0.22
 contextlib2==0.5.5
-
+croniter==0.3.25
+selenium==3.14.0
+retry==0.9.2

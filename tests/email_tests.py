@@ -6,6 +6,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 import logging
 import tempfile
@@ -14,6 +15,7 @@ import unittest
 import mock
 
 from superset import app, utils
+from .utils import read_fixture
 
 send_email_test = mock.Mock()
 
@@ -39,6 +41,39 @@ class EmailSmtpTest(unittest.TestCase):
         assert msg['From'] == app.config.get('SMTP_MAIL_FROM')
         assert len(msg.get_payload()) == 2
         mimeapp = MIMEApplication('attachment')
+        assert msg.get_payload()[-1].get_payload() == mimeapp.get_payload()
+
+    @mock.patch('superset.utils.send_MIME_email')
+    def test_send_smtp_data(self, mock_send_mime):
+        utils.send_email_smtp(
+            'to', 'subject', 'content', app.config, data={'1.txt': b'data'})
+        assert mock_send_mime.called
+        call_args = mock_send_mime.call_args[0]
+        logging.debug(call_args)
+        assert call_args[0] == app.config.get('SMTP_MAIL_FROM')
+        assert call_args[1] == ['to']
+        msg = call_args[2]
+        assert msg['Subject'] == 'subject'
+        assert msg['From'] == app.config.get('SMTP_MAIL_FROM')
+        assert len(msg.get_payload()) == 2
+        mimeapp = MIMEApplication('data')
+        assert msg.get_payload()[-1].get_payload() == mimeapp.get_payload()
+
+    @mock.patch('superset.utils.send_MIME_email')
+    def test_send_smtp_inline_images(self, mock_send_mime):
+        image = read_fixture('sample.png')
+        utils.send_email_smtp(
+            'to', 'subject', 'content', app.config, images=dict(blah=image))
+        assert mock_send_mime.called
+        call_args = mock_send_mime.call_args[0]
+        logging.debug(call_args)
+        assert call_args[0] == app.config.get('SMTP_MAIL_FROM')
+        assert call_args[1] == ['to']
+        msg = call_args[2]
+        assert msg['Subject'] == 'subject'
+        assert msg['From'] == app.config.get('SMTP_MAIL_FROM')
+        assert len(msg.get_payload()) == 2
+        mimeapp = MIMEImage(image)
         assert msg.get_payload()[-1].get_payload() == mimeapp.get_payload()
 
     @mock.patch('superset.utils.send_MIME_email')
