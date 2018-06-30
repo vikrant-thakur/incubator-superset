@@ -26,7 +26,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.engine import url
 from sqlalchemy.engine.url import make_url
-from sqlalchemy.orm import relationship, subqueryload, backref
+from sqlalchemy.orm import backref, relationship, subqueryload
 from sqlalchemy.orm.session import make_transient
 from sqlalchemy.pool import NullPool
 from sqlalchemy.schema import UniqueConstraint
@@ -119,7 +119,8 @@ class Category(Model, AuditMixinNullable, ImportMixin):
     team_id = Column(Integer, ForeignKey('teams.id'))
     team = relationship('Team', backref='categories')
     parent_id = Column(Integer, ForeignKey('categories.id'))
-    children = relationship('Category',
+    children = relationship(
+        'Category',
         backref=backref('parent', remote_side=[id], uselist=False),
         single_parent=True,
     )
@@ -155,10 +156,11 @@ slice_team = Table('slice_team', metadata,
                    Column('team_id', Integer, ForeignKey('teams.id')),
                    Column('slice_id', Integer, ForeignKey('slices.id')))
 
-slice_category = Table('slice_category', metadata,
-                   Column('id', Integer, primary_key=True),
-                   Column('category_id', Integer, ForeignKey('categories.id')),
-                   Column('slice_id', Integer, ForeignKey('slices.id')))
+slice_category = Table(
+    'slice_category', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('category_id', Integer, ForeignKey('categories.id')),
+    Column('slice_id', Integer, ForeignKey('slices.id')))
 
 
 class Slice(Model, AuditMixinNullable, ImportMixin):

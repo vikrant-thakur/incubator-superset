@@ -13,16 +13,17 @@ import time
 import traceback
 from urllib import parse
 
+import bleach
 from flask import (
     flash, g, Markup, redirect, render_template, request, Response, url_for,
 )
 from flask_appbuilder import expose, SimpleFormView, MultipleView, MasterDetailView
 from flask_appbuilder.actions import action
-from flask_appbuilder.models.sqla.interface import SQLAInterface
-from flask_appbuilder.security.decorators import has_access, has_access_api
-from flask_appbuilder.models.sqla.filters import FilterRelationManyToManyEqual
 from flask_appbuilder.fields import QuerySelectField
 from flask_appbuilder.fieldwidgets import Select2Widget
+from flask_appbuilder.models.sqla.filters import FilterRelationManyToManyEqual
+from flask_appbuilder.models.sqla.interface import SQLAInterface
+from flask_appbuilder.security.decorators import has_access, has_access_api
 from flask_babel import gettext as __
 from flask_babel import lazy_gettext as _
 import pandas as pd
@@ -200,9 +201,7 @@ def team_filter(query, model_class):
             db.session.query(model_class.id)
             .distinct()
             .join(model_class.team)
-            .filter(model_class.id.in_(team_ids))
-        ),
-    )
+            .filter(model_class.id.in_(team_ids))))
     return query
 
 
