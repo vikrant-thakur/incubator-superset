@@ -6,7 +6,7 @@ import CssEditor from './CssEditor';
 import RefreshIntervalModal from './RefreshIntervalModal';
 import SaveModal from './SaveModal';
 import SliceAdder from './SliceAdder';
-import DisplayInfoButton from '../../components/DisplayInfoButton';
+import DisplayInfoButton from '../../../../components/DisplayInfoButton';
 import { t } from '../../../../locales';
 import InfoTooltipWithTrigger from '../../../../components/InfoTooltipWithTrigger';
 
