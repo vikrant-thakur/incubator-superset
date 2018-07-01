@@ -85,10 +85,26 @@ export default class DisplayInfoButton extends React.PureComponent {
     } else if (this.state.error) {
       return <pre>{this.state.error}</pre>;
     } else if (this.state.info) {
+      var index = 1;
       return (
         <div className="info popup">
           <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-            <Tab eventKey={1} title={t('General')}>
+            {this.state.info.description &&
+            <Tab eventKey={index++} title={t('Details')}>
+              <Panel>
+                <Row>
+                  <hr />
+                  <Col>
+                    <Markdown
+                      source={this.state.info.description}
+                      options={remarkableOptions}
+                    />
+                  </Col>
+                </Row>
+              </Panel>
+            </Tab>
+            }
+            <Tab eventKey={index++} title={t('General')}>
               <Panel>
                 <Row>
                   <Col md={2}><h5>Name</h5></Col>
@@ -114,19 +130,10 @@ export default class DisplayInfoButton extends React.PureComponent {
                   <Col md={2}><h5>Updated</h5></Col>
                   <Col><h5>{this.state.info.updated}</h5></Col>
                 </Row>
-                <Row>
-                  <hr />
-                  <Col>
-                    <Markdown
-                      source={this.state.info.description}
-                      options={remarkableOptions}
-                    />
-                  </Col>
-                </Row>
               </Panel>
             </Tab>
             {this.state.info.team.name &&
-            <Tab eventKey={2} title={t('Team')}>
+            <Tab eventKey={index++} title={t('Team')}>
               <Panel>
                 <Row>
                   <Col md={2}><h5>Name</h5></Col>
@@ -160,7 +167,11 @@ export default class DisplayInfoButton extends React.PureComponent {
         animation
         isButton
         triggerNode={<span>Info</span>}
-        modalTitle={t(this.props.type + ' info')}
+        modalTitle={t(
+            this.props.type.charAt(0).toUpperCase() +
+            this.props.type.substr(1).toLowerCase() +
+            ' Information'
+        )}
         bsSize="large"
         beforeOpen={this.beforeOpen}
         onEnter={this.getUrl.bind(this)}

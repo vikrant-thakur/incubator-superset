@@ -4,7 +4,7 @@ import cx from 'classnames';
 import URLShortLinkButton from '../../components/URLShortLinkButton';
 import EmbedCodeButton from './EmbedCodeButton';
 import DisplayQueryButton from './DisplayQueryButton';
-import DisplayInfoButton from '../../../components/DisplayInfoButton';
+import DisplayInfoButton from '../../components/DisplayInfoButton';
 import { t } from '../../locales';
 import { exportChart, getExploreLongUrl } from '../exploreUtils';
 
